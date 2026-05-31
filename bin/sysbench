@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# sysbench ラッパー
+# bin/sysbench.bin の実行に必要な libmysqlclient を lib/ から解決する。
+# share/ 以下に Lua スクリプトを同梱し、CWD を share/ にして exec することで
+# require('oltp_common') 等がコンパイル時パスに依存せず解決される。
+WORKSPACE="$(cd "$(dirname "$0")/.." && pwd)"
+export LD_LIBRARY_PATH="$WORKSPACE/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+args=()
+for arg in "$@"; do
+  lua="$WORKSPACE/share/${arg}.lua"
+  if [[ -f "$lua" ]]; then
+    args+=("$lua")
+  else
+    args+=("$arg")
+  fi
+done
+
+cd "$WORKSPACE/share"
+exec "$WORKSPACE/bin/sysbench.bin" "${args[@]}"

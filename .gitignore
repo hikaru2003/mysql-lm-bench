@@ -1,0 +1,9 @@
+installs/*/data/
+installs/*/logs/
+installs/*/run/
+installs/*/tmp/
+installs/*/var/
+installs/*/etc/
+experiments/results/
+perf.data
+.claude/
